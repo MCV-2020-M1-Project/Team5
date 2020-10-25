@@ -7,9 +7,9 @@ from multiresolution import *
 
 
 # Params that should be modified
-pathQ2 = 'qsd2_w2'  # Path to the query images
+pathQ2 = 'qst2_w2'  # Path to the query images
 pathM2 = 'BBDD'
-k = 1 # Number of bests predictions
+k = 10 # Number of bests predictions
 
 listQImgs , idsQImgs = load_images(pathQ2)
 listMImgs,idsMImgs = load_images(pathM2)
@@ -24,14 +24,13 @@ crped_images = crop_imgarray(listQImgs)
 # For each cropped image, a textbox is seacrhed and removed and a multiresolution is computed
 for img in crped_images:
 
-    results_paiting = []
+    results_painting = []
+    box_painting = []
 
     for painting in img: # loop for each individual painting from one image
 
-        txtbox = calculate_txtbox(painting)
-        x, y, w, h = txtbox
-
-        bbox.append([[x, y, x+w, y+h]])
+        [x, y, w, h] = calculate_txtbox(painting)
+        box_painting.append([x, y, x+w, y+h])
 
         mask = np.ones(painting.shape[:2], np.uint8)
         mask[y:y + h, x:x + w] = -1
@@ -47,9 +46,10 @@ for img in crped_images:
         klist = compute_multiresolution(painting_tbx,listMImgs,idsMImgs,4)
         klist = klist[:k]
 
-        results_paiting.append(klist)
+        results_painting.append(klist)
 
-    results.append(results_paiting)
+    bbox.append(box_painting)
+    results.append(results_painting)
 
 ## -----------------------------------------------------------------------------------------------
 # Store the bounding boxes and find the MAP@K metric
@@ -66,6 +66,11 @@ outfile.close()
 gt_file = open('qsd2_w2/gt_corresps.pkl','rb') # it assumes that you are using qsd2_w2 in order to compute the MAP
 gtquery_list = pickle.load(gt_file)
 gt_file.close()
+gtquery_list_corrected = transformGT(gtquery_list)
 
 res = resultMAP(results)
-mapkScore = metrics.mapk(gtquery_list, res, k)
+mapkScore = metrics.mapk(gtquery_list_corrected, res, 5)
+print(mapkScore)
+
+mapkScore = metrics.mapk(gtquery_list_corrected, res, 1)
+print(mapkScore)

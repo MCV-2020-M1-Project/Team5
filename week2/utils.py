@@ -223,4 +223,15 @@ def resultMAP(result):
     r = []
     for i in range(np.size(result,0)):
         r.append(result[i][0])
+        if len(result[i]) == 2:
+            r.append(result[i][1])
     return r
+
+# it corrects the way it is stored the GT (each image as a list of lists, as it is said in the slides)
+def transformGT(gt_list):
+    gt = []
+    for i in range(len(gt_list)):
+        gt.append([gt_list[i][0]])
+        if len(gt_list[i]) == 2:
+            gt.append([gt_list[i][1]])
+    return gt

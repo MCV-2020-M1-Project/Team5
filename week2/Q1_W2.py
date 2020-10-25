@@ -14,7 +14,7 @@ k = 10 # Number of bests predictions
 listQImgs , idsQImgs = load_images(pathQ2)
 listMImgs,idsMImgs = load_images(pathM2)
 
-pkl_path = "result.pkl"
+pkl_path = 'result.pkl'
 results = []
 bbox = []
 
@@ -22,12 +22,13 @@ bbox = []
 for img in listQImgs:
 
     img = [img] # convert list into a list of lists
-    results_paiting = [] # init
+    results_painting = [] # init
+    box_painting = []
 
     for painting in img: # loop for each individual painting from one image
 
-        txtbox = calculate_txtbox(painting)
-        x, y, w, h = txtbox
+        [x, y, w, h] = calculate_txtbox(painting)
+        box_painting.append([x,y,w+x,h+y])
         mask = np.ones(painting.shape[:2], np.uint8)
         mask[y:y + h, x:x + w] = -1
 
@@ -42,9 +43,10 @@ for img in listQImgs:
         klist = compute_multiresolution(painting_tbx,listMImgs,idsMImgs,4)
         klist = klist[:k]
 
-        results_paiting.append(klist)
+        results_painting.append(klist)
 
-    results.append(results_paiting)
+    bbox.append(box_painting)
+    results.append(results_painting)
 
 ## -----------------------------------------------------------------------------------------------
 # Store the bounding boxes and find the MAP@K metric

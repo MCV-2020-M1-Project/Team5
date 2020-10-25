@@ -61,4 +61,4 @@ def calculate_txtbox(image):
     X = [x1,x2,x3,x4,x5,x6]
     Y = [y1,y2,y3,y4,y5,y6]
     ind = chooseBestBbox(W,H)
-    return [X[ind],Y[ind],X[ind]+W[ind],Y[ind]+H[ind]]
+    return [X[ind],Y[ind],W[ind],H[ind]]
