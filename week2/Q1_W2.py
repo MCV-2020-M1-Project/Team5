@@ -49,6 +49,10 @@ for img in listQImgs:
 ## -----------------------------------------------------------------------------------------------
 # Store the bounding boxes and find the MAP@K metric
 
+outfile = open(pkl_path, 'wb')
+pickle.dump(results, outfile)
+outfile.close()
+
 filename = 'text_boxes.pkl'
 outfile = open(filename, 'wb')
 pickle.dump(bbox, outfile)

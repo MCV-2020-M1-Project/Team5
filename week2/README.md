@@ -22,7 +22,6 @@ Change path to BBDD - Line 11
 Number of best mappings (k): 10 (for MAP@5, k = 5) - Line 12
 
 
-
 ## Files description
 
 ### histograms.py
