@@ -4,6 +4,7 @@ import cv2
 import matplotlib.pyplot as plt
 import math
 
+# input: folder path // output: list of images sorted by ID, list of IDs
 def load_images(folder):
     images = []
     ids = []
@@ -27,7 +28,7 @@ def load_images(folder):
 
     return ordImgs, ordIds
 
-
+# input: imgage, number of divisions (ex: 2 = divided in 2x2 regions) // output: list of divided images
 def divideImg(img, k):
     if k == 1:
         return img
@@ -42,7 +43,6 @@ def divideImg(img, k):
                 div = img[i * sR:sR * (i + 1), j * sC:sC * (j + 1), :]
                 divIm.append(div)
         return divIm
-
     else:
         if int(math.sqrt(k)) % k == 0:
             nCol = int(math.sqrt(k))
@@ -66,7 +66,7 @@ def divideImg(img, k):
             divIm = None
     return divIm
 
-
+# It transforms the set of point of the contours into bounding boxes
 def filterContours(cont,im,imbin):
     contNew = []
     difX = []
@@ -113,9 +113,9 @@ def filterContours(cont,im,imbin):
             ind = np.argmax(difT)
             difT[ind] = 0
 
-
     return x, y, w, h
 
+# Choose the best Aspect Ratio
 def bestAr(im):
     if (np.size(im,0)+150)<np.size(im,1):
         f = 2
@@ -123,6 +123,7 @@ def bestAr(im):
         f = 4
     return f
 
+# Choose the most suitable bounding box (rectangular, not too big or too small compared with the original image)
 def chooseBestBbox(w,h):
     ar = []
     for i in range(len(w)):
@@ -148,6 +149,7 @@ def histInBbox(x,y,w,h,im):
     count = histocount(histr[0])
     return count
 
+# Computes the intersection over union metric
 def iou(boxA,boxB):
     #Coordinates of the intersection rectangle
     xA = max(boxA[0], boxB[0])
@@ -163,6 +165,7 @@ def iou(boxA,boxB):
     iou = interArea / float(boxAArea + boxBArea - interArea)
     return iou
 
+# Solving the errors of the ground truth bounding box
 def convertBbox(gtBox):
     gt = []
     for i in range(len(gtBox)):
@@ -177,8 +180,6 @@ def convertBbox(gtBox):
         gt.append([x,y,x_,y_])
     return gt
 
-
-
 def findArea(contours,im):
     bigShapes = []
     A = (np.size(im,0)*np.size(im,1))
@@ -192,6 +193,7 @@ def findArea(contours,im):
                 bigShapes.append(contours)
     return bigShapes
 
+# load the masks of the DDBB to do the evaluation
 def load_masks(folder):
     images = []
     ids = []
@@ -214,3 +216,11 @@ def load_masks(folder):
         ordIds, ordMasks = zip(*sorted(zip(ids, images)))
 
     return ordMasks, ordIds
+
+
+# it gets the result pkl and returns the map value
+def resultMAP(result):
+    r = []
+    for i in range(np.size(result,0)):
+        r.append(result[i][0])
+    return r

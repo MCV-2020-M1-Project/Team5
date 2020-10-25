@@ -125,14 +125,12 @@ def compute_mask(image):
 def compute_croppedimg(image):
 
     contours = compute_contours(image)
-
     cropped_images = []
 
     # If contours not found, pass whole image
     if not contours:
         cropped_images.append(image)
     else:
-
         rects = contour2rectangle(contours)
         x1, y1, w1, h1 = rects[0]
 
@@ -147,7 +145,6 @@ def compute_croppedimg(image):
             else:
                 cnt2 = rects[cmpt]
                 found = True
-
 
         # Initialize mask & activate the pixels inside the rectangle
         mask = np.zeros(image.shape[:2], np.uint8)
@@ -226,34 +223,3 @@ def mask_evaluation(images,masks):
         F1s.append(F1)
 
     return PRs, RCs, F1s
-
-
-## Testing purposes
-#
-# from utils import *
-#
-#
-#
-# pathQ2 = 'D:\MCV\M1\datasets\P2\qsd2_w2'
-# q2Gt_mask, q2IdsMs = load_masks(pathQ2)
-# # Compute binary masks
-# q2Im = []
-# name = []
-# idsq2 = []
-# for file in os.listdir(pathQ2):
-#     if file.endswith('.jpg'):
-#         im = cv2.imread(os.path.join(pathQ2, file))
-#         q2Im.append(im)
-#         name = file.split('.')[0]
-#         idsq2.append(int(name))
-# idsq2Ord, q2ImOrd = zip(*sorted(zip(idsq2, q2Im)))
-#
-# masks = get_mask_array(q2ImOrd)
-#
-# # Calculate Precision, Recall and F1 metrics on the predicted masks
-# if q2Gt_mask:
-#     PRs, RCs, F1s = mask_evaluation(q2Gt_mask, masks)
-#     print('precision:',np.mean(PRs))
-#     print('recall:',np.mean(RCs))
-#     print('f1:',np.mean(F1s))
-#
