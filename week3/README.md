@@ -5,7 +5,9 @@ It is assumed that folders of the queries and DDBB are at the same path level th
 
 ## Q1_W3.py
 
-It performs the retrieval of the corresponding image. To do so, it computes the multiresolution and the text removal. 
+It performs the retrieval of the corresponding image. To do so, it computes the text and color descriptor ( and also texture , but it is not default). Also, it removes the text in order to match the paintings.
+
+Creates a folder where the .txt with the names of the authors are stored. 
 
 Change path to query: (default 'qsd1_W3') - Line 9
 
@@ -62,17 +64,21 @@ Divide input image into k subimages and compute the k histograms. Also computes 
 
 It finds the Bbox of the text using morphological filters. 
 
-### multiresolution_precompute.py
-
 ### textDetection.py
+
+Finds the coordinates of the text bbox for each painting. 
 
 ### textReader.py
 
-### imageReader.py
+With the bbox coordinates, it crops the text region and performs OCR in order to read the text in the image.
 
 ### descriptors.py
 
+This file contains the functions to compute the 3 different descriptors: text, texture and color
+
 ### feature_extraction.py
+
+Implements the texture detection algorithms, LBP in our case. 
 
 
 
