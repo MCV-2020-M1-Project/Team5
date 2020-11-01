@@ -3,35 +3,62 @@ from textReader import textReader
 from utils import *
 from histograms import *
 from calculateDistances import *
-import matplotlib.pyplot as plt
 
 
 # Text Similarity
 def text_descriptor(image, Bbox, listMAuthors, idsMImgs):
+    names = []
     # Read as a string the text from the image
     denoised_imgGray = cv.cvtColor(image.astype(np.uint8), cv.COLOR_BGR2GRAY)
     textReader_obj = textReader(denoised_imgGray, Bbox)
 
     # Compute the similarities between the strings and select the name that gives the best ratio
     ratios = []
+    name_readed1 = textReader_obj.cropped_text
+    name_readed2 = textReader_obj.opening_text
+    name_readed3 = textReader_obj.closing_text
     for j in range(0, len(listMAuthors)):
         name_DDBB = listMAuthors[j]
-        name_readed = textReader_obj.opening_text
 
-        if name_readed != '':
-            ratio = levenshtein_ratio_and_distance(name_DDBB, name_readed, ratio_calc=True)
+        if name_readed1 != '':
+            ratio1 = levenshtein_ratio_and_distance(name_DDBB, name_readed1, ratio_calc=True)
         else:  # error case
-            ratio = 0
+            ratio1 = 0
+
+        if name_readed2 != '':
+            ratio2 = levenshtein_ratio_and_distance(name_DDBB, name_readed2, ratio_calc=True)
+        else:  # error case
+            ratio2 = 0
+
+        if name_readed3 != '':
+            ratio3 = levenshtein_ratio_and_distance(name_DDBB, name_readed3, ratio_calc=True)
+        else:  # error case
+            ratio3 = 0
+
+        ratio = max(ratio1, ratio2, ratio3)
+
+        # return the name
+        if ratio1 >= ratio2 and ratio1 >= ratio3:
+            names.append(name_readed1)
+        elif ratio2 >= ratio1 and ratio2 >= ratio3:
+            names.append(name_readed2)
+        elif ratio3 >= ratio2 and ratio3 >= ratio1:
+            names.append(name_readed3)
+
         ratios.append(ratio)
 
     # Obtain the ids of the paintings of the author that achieved the best ratio
-    # m = max(ratios)
-    # painting_ids = [j for j, k in enumerate(ratios) if k == m]
+    m = max(ratios)
+    painting_ids = [j for j, k in enumerate(ratios) if k == m]
+    max_paintings = len(painting_ids) # since they are sorted in idsSorted, we can just take the number of maximums
 
     # Create the sorted list
     ratiosSorted, idsSorted = zip(*sorted(zip(ratios, idsMImgs), reverse=True))
 
-    return idsSorted
+    # return the name
+    final_name = names[idsSorted[0]]
+
+    return idsSorted, max_paintings, final_name
 
 # Multiresolution
 def color_descriptor(image, mask, listMImgs, idsMImgs, divisions):

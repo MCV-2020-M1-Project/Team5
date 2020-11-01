@@ -343,3 +343,6 @@ def levenshtein_ratio_and_distance(s, t, ratio_calc = False):
         # insertions and/or substitutions
         # This is the minimum number of edits needed to convert string a to string b
         return "The strings are {} edits away".format(distance[row][col])
+
+
+    #def correct_cropped_img():

@@ -92,13 +92,12 @@ def LBP(image):
 
 def LBP_sci(image,radius,numPoints):
 
-    #params
+    # params
     # numPoints = 4
     # radius = 1
 
-    if len(image.shape)==3:
+    if len(image.shape) == 3:
         image = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
     lbp = local_binary_pattern(image, numPoints, radius, method="uniform")
 
     return lbp
-
