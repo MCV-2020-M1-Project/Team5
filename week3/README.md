@@ -64,10 +64,6 @@ Divide input image into k subimages and compute the k histograms. Also computes 
 
 It finds the Bbox of the text using morphological filters. 
 
-### textDetection.py
-
-Finds the coordinates of the text bbox for each painting. 
-
 ### textReader.py
 
 With the bbox coordinates, it crops the text region and performs OCR in order to read the text in the image.
